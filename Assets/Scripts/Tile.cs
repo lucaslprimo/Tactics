@@ -61,4 +61,12 @@ public class Tile : MonoBehaviour
         rend.color = Color.white;
         isWalkable = false;
     }
+
+    private void OnMouseDown()
+    {
+        if (isWalkable && gm.selectedUnit != null)
+        {
+            gm.selectedUnit.Move(this.transform.position);
+        }
+    }
 }

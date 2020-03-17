@@ -10,6 +10,9 @@ public class Unit : MonoBehaviour
 
     public int tileSpeed;
     internal bool hasMoved = false;
+    public float moveSpeed;
+
+    public int playerNumber;
 
     // Start is called before the first frame update
     void Start()
@@ -30,17 +33,23 @@ public class Unit : MonoBehaviour
         {
             selected = false;
             gm.selectedUnit = null;
+            gm.ResetTiles();
         }
         else
         {
-            if(gm.selectedUnit != null)
+            if(playerNumber == gm.playerTurn)
             {
-                gm.selectedUnit.selected = false;
-            }
+                if (gm.selectedUnit != null)
+                {
+                    gm.selectedUnit.selected = false;
+                }
 
-            selected = true;
-            gm.selectedUnit = this;
-            GetWalkableTiles();
+                selected = true;
+                gm.selectedUnit = this;
+
+                gm.ResetTiles();
+                GetWalkableTiles();
+            }
         }
     }
 
@@ -65,4 +74,28 @@ public class Unit : MonoBehaviour
             }
         }
     }
+
+    public void Move(Vector2 position)
+    {
+        gm.ResetTiles();
+        StartCoroutine(StartMovement(position));
+    }
+
+    IEnumerator StartMovement(Vector2 position) { 
+        while(transform.position.x != position.x)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, new Vector3(position.x, transform.position.y, transform.position.z), moveSpeed * Time.deltaTime) ;
+            yield return null;
+
+        }
+
+        while (transform.position.y != position.y)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, position.y, transform.position.z), moveSpeed * Time.deltaTime);
+            yield return null;
+        }
+
+        hasMoved = true;
+    }
+
 }

@@ -6,15 +6,56 @@ public class GameMaster : MonoBehaviour
 {
     public Unit selectedUnit;
 
-    // Start is called before the first frame update
-    void Start()
+    public int maxPlayers;
+
+    public int playerTurn = 1;
+
+    public GameObject selectedHighlight;
+
+    private void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            EndTurn();
+        }
+
+        if( selectedUnit == null)
+        {
+            selectedHighlight.SetActive(false);
+        }
+        else
+        {
+            selectedHighlight.SetActive(true);
+            selectedHighlight.transform.position = selectedUnit.transform.position;
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void ResetTiles()
     {
-        
+        foreach (Tile tile in FindObjectsOfType<Tile>())
+        {
+            tile.Reset(); 
+        }
+    }
+
+    public void EndTurn()
+    {
+        playerTurn++;
+        {
+            if (playerTurn > maxPlayers)
+            {
+                playerTurn = 1;
+            }
+        }
+
+        ResetUnits();
+    }
+
+    public void ResetUnits()
+    {
+        foreach (Unit unit in FindObjectsOfType<Unit>())
+        {
+            unit.hasMoved = false;
+        }
     }
 }
